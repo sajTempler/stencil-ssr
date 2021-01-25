@@ -1,0 +1,6 @@
+{
+  "name": "client/hydrate",
+  "description": "client component hydration app.",
+  "main": "index.js",
+  "types": "index.d.ts"
+}
