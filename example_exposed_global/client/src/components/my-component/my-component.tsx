@@ -24,6 +24,6 @@ export class MyComponent {
   }
 
   render() {
-    return <div>{this.people?.map(person => <p>{person.}</p>)}</div>;
+    return <div>{this.people?.map(person => <p>{person.name}</p>)}</div>;
   }
 }
