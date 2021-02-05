@@ -20,3 +20,5 @@ same for server:
 
 You will see intellisense in Stencil components:
 
+
+![Intellisense](https://raw.githubusercontent.com/sajTempler/stencil-ssr/master/images/stencil-ssr-intellisense.jpg)
