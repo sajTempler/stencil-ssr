@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
+import { People, DataProviderType } from 'data_contract';
+import * as express from 'express';
+import * as cors from 'cors';
 
-const { renderToString } = require('../client/hydrate');
+import { renderToString } from '../../client/hydrate';
 
 const app = express();
 const port = 3000;
@@ -17,9 +18,10 @@ app.get('/', async (_req, res) => {
     res.send(html);
 })
 
-function peopleDataProvider() {
+// todo: figure how to get rid of any
+function peopleDataProvider(): Promise<People[] | any> {
     return new Promise((resolve, _reject) => {
-        const data = [
+        const data: People[] = [
             {
                 name: 'szymon'
             },
@@ -35,12 +37,12 @@ function peopleDataProvider() {
     });
 }
 
-async function dataProvider(type) {
+async function dataProvider<T>(type: DataProviderType): Promise<T> {
     switch (type) {
-        case 'people':
-            return await peopleDataProvider();
+        case DataProviderType.PEOPLE:
+            return peopleDataProvider();
         default:
-            return await peopleDataProvider();
+            return peopleDataProvider();
     }
 }
 
