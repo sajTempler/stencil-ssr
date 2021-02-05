@@ -1,5 +1,4 @@
 import { Component, h, Prop, Build } from '@stencil/core';
-import got from 'got';
 
 @Component({
   tag: 'my-component',
@@ -15,9 +14,9 @@ export class MyComponent {
     try {
       if (Build.isServer) {
 
-        const response = await got('http://localhost:3000/api');
+        const people = await (global as any).dataProvider('people');
 
-        this.people = JSON.parse(response.body);
+        this.people = people;
       }
 
     } catch (e) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
-const { renderToString  } = require('../client/hydrate');
+const { renderToString } = require('../client/hydrate');
 
 const app = express();
 const port = 3000;
@@ -17,24 +17,34 @@ app.get('/', async (_req, res) => {
     res.send(html);
 })
 
-app.get('/api', (_req, res) => {
+function peopleDataProvider() {
+    return new Promise((resolve, _reject) => {
+        const data = [
+            {
+                name: 'szymon'
+            },
+            {
+                name: 'ali'
+            },
+            {
+                name: 'wik'
+            }
+        ];
 
-    console.log('API WAS HIT');
+        return resolve(data);
+    });
+}
 
-    const data = [
-        {
-            name: 'szymon'
-        },
-        {
-            name: 'ali'
-        },
-        {
-            name: 'wik'
-        }
-    ]
+async function dataProvider(type) {
+    switch (type) {
+        case 'people':
+            return await peopleDataProvider();
+        default:
+            return await peopleDataProvider();
+    }
+}
 
-    res.send(JSON.stringify(data));
-})
+global.dataProvider = dataProvider;
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
