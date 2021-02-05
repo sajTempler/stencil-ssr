@@ -1,4 +1,5 @@
 import { Component, h, Prop, Build } from '@stencil/core';
+import { People, DataProviderType } from 'data_contract';
 
 @Component({
   tag: 'my-component',
@@ -8,14 +9,12 @@ import { Component, h, Prop, Build } from '@stencil/core';
 export class MyComponent {
 
   @Prop()
-  people: { name: string }[];
+  people: People[];
 
   async componentWillLoad() {
     try {
       if (Build.isServer) {
-
-        const people = await (global as any).dataProvider('people');
-
+        const people = await global.dataProvider<People[]>(DataProviderType.PEOPLE);
         this.people = people;
       }
 
@@ -25,6 +24,6 @@ export class MyComponent {
   }
 
   render() {
-    return <div>{this.people?.map(person => <p>{person?.name}</p>)}</div>;
+    return <div>{this.people?.map(person => <p>{person.}</p>)}</div>;
   }
 }
