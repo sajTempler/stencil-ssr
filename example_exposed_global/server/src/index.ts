@@ -27,11 +27,11 @@ app.get('/', async (_req, res) => {
         prettyHtml: true
     });
 
-    console.log(html);
-
     const $ = cheerio.load(html);
 
-    $('head').append('<script type="module" src="http://172.28.39.204:9999/client/client.esm.js"></script>');
+    // $('head').append('<script type="module" src="http://172.28.39.204:9999/dist/esm/client.js"></script>');
+    $('head').append('<script type="module" src="http://172.28.39.204:9999/dist/client/client.esm.js"></script>');
+    // $('head').append('<script type="module" src="http://172.28.39.204:9999/loader/index.js"></script>');
 
     const finalHtml = $.html();
 

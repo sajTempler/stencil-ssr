@@ -4698,7 +4698,7 @@ var global$1 = (typeof global !== "undefined" ? global :
   typeof window !== "undefined" ? window : {});
 
 const NAMESPACE = 'client';
-const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: false, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: false, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: false, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
+const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: true, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: false, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
 
 function componentOnReady() {
  return getHostRef(this).$onReadyPromise$;
@@ -4905,7 +4905,7 @@ const createTime = (e, t = "") => {
  10 & n && (o["s-sc"] = l, 
  o.classList.add(l + "-h"), BUILD.scoped  ), 
  s();
-}, getScopeId = (e, t) => "sc-" + (e.$tagName$), isComplexType = e => "object" == (e = typeof e) || "function" === e, isPromise = e => !!e && ("object" == typeof e || "function" == typeof e) && "function" == typeof e.then, h = (e, t, ...o) => {
+}, getScopeId = (e, t) => "sc-" + (e.$tagName$), EMPTY_OBJ = {}, isComplexType = e => "object" == (e = typeof e) || "function" === e, isPromise = e => !!e && ("object" == typeof e || "function" == typeof e) && "function" == typeof e.then, h = (e, t, ...o) => {
  let n = null, l = null, a = !1, r = !1, i = [];
  const d = t => {
   for (let o = 0; o < t.length; o++) n = t[o], Array.isArray(n) ? d(n) : null != n && "boolean" != typeof n && ((a = "function" != typeof e && !isComplexType(n)) ? n = String(n) : BUILD.isDev  , 
@@ -4925,8 +4925,18 @@ const createTime = (e, t = "") => {
   $elm$: null,
   $children$: null
  };
- return (o.$name$ = null), o;
-}, Host = {}, isHost = e => e && e.$tag$ === Host;
+ return (o.$attrs$ = null), (o.$name$ = null), o;
+}, Host = {}, isHost = e => e && e.$tag$ === Host, setAccessor = (e, t, o, n, s, l) => {
+ if (o !== n) {
+  let a = isMemberInElement(e, t), r = t.toLowerCase();
+  if ((a ) || "o" !== t[0] || "n" !== t[1]) ; else t = "-" === t[2] ? t.slice(3) : isMemberInElement(win, r) ? r.slice(2) : r[2] + t.slice(3), 
+  o && plt.rel(e, t, o, !1), n && plt.ael(e, t, n, !1);
+ }
+}, updateElement = (e, t, o, n) => {
+ const s = 11 === t.$elm$.nodeType && t.$elm$.host ? t.$elm$.host : t.$elm$, l = e && e.$attrs$ || EMPTY_OBJ, a = t.$attrs$ || EMPTY_OBJ;
+ for (n in l) n in a || setAccessor(s, n, l[n], void 0);
+ for (n in a) setAccessor(s, n, l[n], a[n]);
+};
 
 let scopeId, contentRef, hostTagName, useNativeShadowDom = !1, checkSlotFallbackVisibility = !1, checkSlotRelocate = !1;
 
@@ -4935,6 +4945,7 @@ const createElm = (e, t, o, n) => {
  if (!useNativeShadowDom && (checkSlotRelocate = !0, "slot" === r.$tag$ && (scopeId && n.classList.add(scopeId + "-s"), 
  r.$flags$ |= r.$children$ ? 2 : 1)), null !== r.$text$) s = r.$elm$ = doc.createTextNode(r.$text$); else if (1 & r.$flags$) s = r.$elm$ = slotReferenceDebugNode(r) ; else {
   if (s = r.$elm$ = doc.createElement(2 & r.$flags$ ? "slot-fb" : r.$tag$), 
+  updateElement(null, r), 
   null != scopeId && s["s-si"] !== scopeId && s.classList.add(s["s-si"] = scopeId), 
   r.$children$) for (i = 0; i < r.$children$.length; ++i) l = createElm(e, r, i, s), 
   l && s.appendChild(l);
@@ -4962,7 +4973,8 @@ const createElm = (e, t, o, n) => {
 }, isSameVnode = (e, t) => e.$tag$ === t.$tag$ && ("slot" === e.$tag$ ? e.$name$ === t.$name$ : !BUILD.vdomKey ), referenceNode = e => e && e["s-ol"] || e, parentReferenceNode = e => (e["s-ol"] ? e["s-ol"] : e).parentNode, patch = (e, t) => {
  const o = t.$elm$ = e.$elm$, n = e.$children$, s = t.$children$, a = t.$text$;
  let r;
- null !== a ? (r = o["s-cr"]) ? r.parentNode.textContent = a : e.$text$ !== a && (o.data = a) : (null !== n && null !== s ? ((e, t, o, n) => {
+ null !== a ? (r = o["s-cr"]) ? r.parentNode.textContent = a : e.$text$ !== a && (o.data = a) : ((updateElement(e, t)), 
+ null !== n && null !== s ? ((e, t, o, n) => {
   let s, a = 0, r = 0, c = t.length - 1, $ = t[0], m = t[c], p = n.length - 1, h = n[0], u = n[p];
   for (;a <= c && r <= p; ) if (null == $) $ = t[++a]; else if (null == m) m = t[--c]; else if (null == h) h = n[++r]; else if (null == u) u = n[--p]; else if (isSameVnode($, h)) patch($, h), 
   $ = t[++a], h = n[++r]; else if (isSameVnode(m, u)) patch(m, u), m = t[--c], u = n[--p]; else if (isSameVnode($, u)) "slot" !== $.$tag$ && "slot" !== u.$tag$ || putBackInOriginalLocation($.$elm$.parentNode, !1), 
@@ -5034,7 +5046,7 @@ const createElm = (e, t, o, n) => {
   checkSlotFallbackVisibility && updateFallbackSlotVisibility(l.$elm$), plt.$flags$ &= -2, 
   relocateNodes.length = 0;
  }
-}, slotReferenceDebugNode = e => doc.createComment(`<slot${e.$name$ ? ' name="' + e.$name$ + '"' : ""}> (host=${hostTagName.toLowerCase()})`), originalLocationDebugNode = e => doc.createComment("org-location for " + (e.localName ? `<${e.localName}> (host=${e["s-hn"]})` : `[${e.textContent}]`)), emitEvent = (e, t, o) => {
+}, slotReferenceDebugNode = e => doc.createComment(`<slot${e.$name$ ? ' name="' + e.$name$ + '"' : ""}> (host=${hostTagName.toLowerCase()})`), originalLocationDebugNode = e => doc.createComment("org-location for " + (e.localName ? `<${e.localName}> (host=${e["s-hn"]})` : `[${e.textContent}]`)), getElement = e => getHostRef(e).$hostElement$ , emitEvent = (e, t, o) => {
  const n = plt.ce(t, o);
  return e.dispatchEvent(n), n;
 }, attachToAncestor = (e, t) => {
@@ -5193,7 +5205,7 @@ const callRender = (e, t, o) => {
     consoleError(e);
    }
    (t.$flags$ &= -9), e(), 
-   fireConnectedCallback();
+   fireConnectedCallback(t.$lazyInstance$);
   }
   if (s.style) {
    let n = s.style;
@@ -5207,10 +5219,11 @@ const callRender = (e, t, o) => {
  const r = t.$ancestorComponent$, i = () => scheduleUpdate(t, !0);
  r && r["s-rc"] ? r["s-rc"].push(i) : i();
 }, fireConnectedCallback = e => {
+ safeCall(e, "connectedCallback");
 }, connectedCallback = e => {
  if (0 == (1 & plt.$flags$)) {
   const t = getHostRef(e), o = t.$cmpMeta$, n = createTime("connectedCallback", o.$tagName$);
-  if (1 & t.$flags$) ; else {
+  if (1 & t.$flags$) fireConnectedCallback(t.$lazyInstance$); else {
    let n;
    if (t.$flags$ |= 1, (n = e.getAttribute("s-id"), n)) {
     ((e, t, o, n) => {
@@ -5330,7 +5343,17 @@ const cmpModules = new Map, getModule = e => {
   if (null != t) return t[e];
  }
  return null;
-}, loadModule = (e, t, o) => getModule(e.$tagName$), registerComponents = e => {
+}, loadModule = (e, t, o) => getModule(e.$tagName$), isMemberInElement = (e, t) => {
+ if (null != e) {
+  if (t in e) return !0;
+  const o = getModule(e.nodeName);
+  if (null != o) {
+   const e = o;
+   if (null != e && null != e.cmpMeta && null != e.cmpMeta.$members$) return t in e.cmpMeta.$members$;
+  }
+ }
+ return !1;
+}, registerComponents = e => {
  for (const t of e) {
   const e = t.cmpMeta.$tagName$;
   cmpModules.set(e, {
@@ -5385,10 +5408,26 @@ class MyComponent {
       console.error(e);
     }
   }
+  connectedCallback() {
+    setTimeout(() => {
+      console.log('calling eryk!', this.people);
+      this.people = [{ name: 'eryk' }];
+      console.log('calling eryk! timeout', this.people);
+    }, 1000);
+  }
+  handleClick(_e, person) {
+    this.people = this.people.map(per => {
+      if (person === per) {
+        return { name: 'clicked' };
+      }
+      return { name: person };
+    });
+  }
   render() {
     var _a;
-    return hAsync("div", null, (_a = this.people) === null || _a === void 0 ? void 0 : _a.map(person => hAsync("p", null, person.name)));
+    return hAsync(Host, null, JSON.stringify(this.people), hAsync("div", null, (_a = this.people) === null || _a === void 0 ? void 0 : _a.map(person => hAsync("p", { onClick: e => this.handleClick(e, person) }, person.name))));
   }
+  get el() { return getElement(this); }
   static get style() { return myComponentCss; }
   static get cmpMeta() { return {
     "$flags$": 9,

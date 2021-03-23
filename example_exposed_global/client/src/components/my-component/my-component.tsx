@@ -1,4 +1,4 @@
-import { Component, h, Prop, Build } from '@stencil/core';
+import { Component, h, Build, Element, Prop, Host } from '@stencil/core';
 
 @Component({
   tag: 'my-component',
@@ -6,6 +6,8 @@ import { Component, h, Prop, Build } from '@stencil/core';
   shadow: true,
 })
 export class MyComponent {
+
+  @Element() el;
 
   @Prop()
   people: any[];
@@ -23,7 +25,28 @@ export class MyComponent {
     }
   }
 
+  connectedCallback() {
+    setTimeout(() => {
+      console.log('calling eryk!', this.people)
+      this.people = [{name: 'eryk'}];
+      console.log('calling eryk! timeout', this.people)
+    }, 1000)
+  }
+
+  handleClick(_e: Event, person: string) {
+    this.people = this.people.map(per => {
+      if (person === per) {
+        return { name: 'clicked' }
+      }
+
+      return { name: person };
+    })
+  }
+
   render() {
-    return <div>{this.people?.map(person => <p>{person.name}</p>)}</div>;
+    return <Host>
+      {JSON.stringify(this.people)}
+      <div>{this.people?.map(person => <p onClick={e => this.handleClick(e, person)}>{person.name}</p>)}</div>
+    </Host>;
   }
 }
