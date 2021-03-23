@@ -1,8 +1,20 @@
-import { People, DataProviderType } from 'data_contract';
+// import { People, DataProviderType } from 'data_contract';
 import * as express from 'express';
 import * as cors from 'cors';
 
+import * as cheerio from 'cheerio'
+
 import { renderToString } from '../../client/hydrate';
+
+export enum DataProviderType {
+    PEOPLE = 'people'
+}
+
+interface IPeople {
+    name: string;
+}
+
+export type People = IPeople;
 
 const app = express();
 const port = 3000;
@@ -13,9 +25,17 @@ app.get('/', async (_req, res) => {
 
     const { html } = await renderToString("<my-component></my-component>", {
         prettyHtml: true
-    })
+    });
 
-    res.send(html);
+    console.log(html);
+
+    const $ = cheerio.load(html);
+
+    $('head').append('<script type="module" src="http://172.28.39.204:9999/client/client.esm.js"></script>');
+
+    const finalHtml = $.html();
+
+    res.send(finalHtml);
 })
 
 // todo: figure how to get rid of any
@@ -46,7 +66,7 @@ async function dataProvider<T>(type: DataProviderType): Promise<T> {
     }
 }
 
-global.dataProvider = dataProvider;
+(global as any).dataProvider = dataProvider;
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)

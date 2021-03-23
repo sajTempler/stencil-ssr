@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type                  | Default     |
-| -------- | --------- | ----------- | --------------------- | ----------- |
-| `people` | --        |             | `{ name: string; }[]` | `undefined` |
+| Property | Attribute | Description | Type    | Default     |
+| -------- | --------- | ----------- | ------- | ----------- |
+| `people` | --        |             | `any[]` | `undefined` |
 
 
 ----------------------------------------------
