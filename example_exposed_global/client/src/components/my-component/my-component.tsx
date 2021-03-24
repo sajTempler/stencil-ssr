@@ -1,5 +1,7 @@
 import { Component, h, Build, Element, Prop, Host } from '@stencil/core';
 
+import state from '../../store/store';
+
 @Component({
   tag: 'my-component',
   styleUrl: 'my-component.css',
@@ -23,14 +25,19 @@ export class MyComponent {
     } catch (e) {
       console.error(e);
     }
+
+    if (Build.isBrowser) {
+      console.log(`browser people`);
+      this.people = state.people;
+    }
   }
 
   connectedCallback() {
-    setTimeout(() => {
-      console.log('calling eryk!', this.people)
-      this.people = [{name: 'eryk'}];
-      console.log('calling eryk! timeout', this.people)
-    }, 1000)
+    // setTimeout(() => {
+    //   console.log('calling eryk!', this.people)
+    //   this.people = [{name: 'eryk'}];
+    //   console.log('calling eryk! timeout', this.people)
+    // }, 1000)
   }
 
   handleClick(_e: Event, person: string) {
