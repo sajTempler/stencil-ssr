@@ -9,35 +9,25 @@ import state from '../../store/store';
 })
 export class MyComponent {
 
-  @Element() el;
+  @Element() el: HTMLElement;
 
   @Prop()
   people: any[];
 
   async componentWillLoad() {
-    try {
-      if (Build.isServer) {
+    if (Build.isServer) {
+      try {
         // @ts-ignore
-        const people = await global.dataProvider<any[]>('people');
-        this.people = people;
+        state.people = await global.dataProvider<string[]>('people');
+      } catch (e) {
+        console.error(e);
       }
-
-    } catch (e) {
-      console.error(e);
     }
 
-    if (Build.isBrowser) {
-      console.log(`browser people`);
-      this.people = state.people;
-    }
-  }
-
-  connectedCallback() {
-    // setTimeout(() => {
-    //   console.log('calling eryk!', this.people)
-    //   this.people = [{name: 'eryk'}];
-    //   console.log('calling eryk! timeout', this.people)
-    // }, 1000)
+    // this happens directly in store
+    // if (Build.isBrowser) {
+    //   this.people = state.people;
+    // }
   }
 
   handleClick(_e: Event, person: string) {
@@ -52,8 +42,7 @@ export class MyComponent {
 
   render() {
     return <Host>
-      {JSON.stringify(this.people)}
-      <div>{this.people?.map(person => <p onClick={e => this.handleClick(e, person)}>{person.name}</p>)}</div>
+      {state.people?.map(person => <p onClick={e => this.handleClick(e, person)}>{person.name}</p>)}
     </Host>;
   }
 }

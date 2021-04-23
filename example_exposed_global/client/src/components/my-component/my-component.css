@@ -1,3 +1,10 @@
 :host {
-  display: block;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+p {
+  font-size: x-large;
 }

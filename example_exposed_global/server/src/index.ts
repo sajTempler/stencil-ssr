@@ -27,10 +27,10 @@ app.get('/', async (_req, res) => {
         prettyHtml: true
     });
 
+    // using cheerio for simplicity, for production you might use templating system
     const $ = cheerio.load(html);
 
-    // $('head').append('<script type="module" src="http://172.28.39.204:9999/dist/esm/client.js"></script>');
-    $('head').append('<script type="module" src="http://172.28.37.244:9999/dist/client/client.esm.js"></script>');
+    $('head').append(`<script type="module" src="http://${process.env.LOCAL_VM_IP?.trim() || 'localhost'}:9999/dist/client/client.esm.js"></script>`);
     $('head').append(`<script type="application/javascript">
         window.appState = {
             people: [
@@ -46,7 +46,6 @@ app.get('/', async (_req, res) => {
             ]
         }
     </script>`);
-    // $('head').append('<script type="module" src="http://172.28.39.204:9999/loader/index.js"></script>');
 
     const finalHtml = $.html();
 
@@ -84,5 +83,5 @@ async function dataProvider<T>(type: DataProviderType): Promise<T> {
 (global as any).dataProvider = dataProvider;
 
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`)
+    console.log(`App listening at http://${process.env.LOCAL_VM_IP?.trim() || 'localhost'}:${port}`)
 })

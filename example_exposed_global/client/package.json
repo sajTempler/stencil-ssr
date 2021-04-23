@@ -16,13 +16,15 @@
   ],
   "scripts": {
     "build": "stencil build",
+    "dev": "stencil build --watch && npx http-server -p 9999 --cors",
+    "dev:assets": "npx http-server -p 9999 --cors",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
   },
   "dependencies": {
-    "@stencil/core": "^2.4.0",
+    "@stencil/core": "^2.5.2",
     "got": "^11.8.1"
   },
   "license": "MIT",

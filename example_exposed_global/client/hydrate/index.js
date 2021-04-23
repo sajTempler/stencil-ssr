@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 /*!
- Stencil Mock Doc v2.5.0 | MIT Licensed | https://stenciljs.com
+ Stencil Mock Doc v2.5.2 | MIT Licensed | https://stenciljs.com
  */
 const CONTENT_REF_ID = 'r';
 const ORG_LOCATION_ID = 'o';
@@ -4698,7 +4698,7 @@ var global$1 = (typeof global !== "undefined" ? global :
   typeof window !== "undefined" ? window : {});
 
 const NAMESPACE = 'client';
-const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: true, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: false, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
+const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: false, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
 
 function componentOnReady() {
  return getHostRef(this).$onReadyPromise$;
@@ -5212,7 +5212,7 @@ const callRender = (e, t, o) => {
     consoleError(e);
    }
    (t.$flags$ &= -9), e(), 
-   fireConnectedCallback(t.$lazyInstance$);
+   fireConnectedCallback();
   }
   if (s.style) {
    let n = s.style;
@@ -5226,11 +5226,10 @@ const callRender = (e, t, o) => {
  const r = t.$ancestorComponent$, i = () => scheduleUpdate(t, !0);
  r && r["s-rc"] ? r["s-rc"].push(i) : i();
 }, fireConnectedCallback = e => {
- safeCall(e, "connectedCallback");
 }, connectedCallback = e => {
  if (0 == (1 & plt.$flags$)) {
   const t = getHostRef(e), o = t.$cmpMeta$, n = createTime("connectedCallback", o.$tagName$);
-  if (1 & t.$flags$) fireConnectedCallback(t.$lazyInstance$); else {
+  if (1 & t.$flags$) ; else {
    let n;
    if (t.$flags$ |= 1, (n = e.getAttribute("s-id"), n)) {
     ((e, t, o, n) => {
@@ -5573,37 +5572,34 @@ const createStore = (defaultState, shouldUpdate) => {
     return map;
 };
 
+var _a, _b;
 const { state, onChange } = createStore({
-  people: []
+  people: (_b = (_a = window) === null || _a === void 0 ? void 0 : _a.appState) === null || _b === void 0 ? void 0 : _b.people
 });
 onChange('people', value => {
   state.people = value;
 });
 
-const myComponentCss = "/*!@:host*/.sc-my-component-h{display:block}";
+const myComponentCss = "/*!@:host*/.sc-my-component-h{display:flex;width:100%;align-items:center;flex-direction:column}/*!@p*/p.sc-my-component{font-size:x-large}";
 
 class MyComponent {
   constructor(hostRef) {
     registerInstance(this, hostRef);
   }
   async componentWillLoad() {
-    try {
-      {
+    {
+      try {
         // @ts-ignore
-        const people = await global.dataProvider('people');
-        this.people = people;
+        state.people = await global.dataProvider('people');
+      }
+      catch (e) {
+        console.error(e);
       }
     }
-    catch (e) {
-      console.error(e);
-    }
-  }
-  connectedCallback() {
-    // setTimeout(() => {
-    //   console.log('calling eryk!', this.people)
-    //   this.people = [{name: 'eryk'}];
-    //   console.log('calling eryk! timeout', this.people)
-    // }, 1000)
+    // this happens directly in store
+    // if (Build.isBrowser) {
+    //   this.people = state.people;
+    // }
   }
   handleClick(_e, person) {
     this.people = this.people.map(per => {
@@ -5615,7 +5611,7 @@ class MyComponent {
   }
   render() {
     var _a;
-    return hAsync(Host, null, JSON.stringify(this.people), hAsync("div", null, (_a = this.people) === null || _a === void 0 ? void 0 : _a.map(person => hAsync("p", { onClick: e => this.handleClick(e, person) }, person.name))));
+    return hAsync(Host, null, (_a = state.people) === null || _a === void 0 ? void 0 : _a.map(person => hAsync("p", { onClick: e => this.handleClick(e, person) }, person.name)));
   }
   get el() { return getElement(this); }
   static get style() { return myComponentCss; }
