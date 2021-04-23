@@ -10,6 +10,8 @@ interface IPerson {
     name: string;
 }
 
+let id = 1;
+
 export type People = IPerson[];
 
 const app = express();
@@ -17,18 +19,33 @@ const port = 3000;
 
 app.use(cors());
 
-app.get('/', async (_req: express.Request, res) => {
+const sleep = (ms: number = 5000) => {
+    return new Promise((resolve) => {
+        return setTimeout(() => {
+            return resolve('');
+        }, ms)
+    })
+}
+
+app.get('/', async (req: express.Request, res) => {
+
+    id += 1;
+
+    (req as any).id = id; 
 
     const { html } = await renderToString("<my-component></my-component>", {
         prettyHtml: true
     });
+
+    // to simulate concurrent request
+    await sleep();
 
     // using cheerio for simplicity, for production you might use templating system
     const $ = cheerio.load(html);
 
     $('head').append(`<script type="module" src="http://${process.env.LOCAL_VM_IP?.trim() || 'localhost'}:9999/dist/client/client.esm.js"></script>`);
 
-    const data = JSON.stringify(await dataProvider());
+    const data = JSON.stringify({...(await dataProvider()), id});
 
     $('head').append(`<script type="application/javascript">
         window.appState = ${data}
@@ -68,10 +85,23 @@ function restrictedDataProvider(): Promise<string[]> {
 }
 
 async function dataProvider(): Promise<any> {
-    return {
+
+    const computed = {
         people: await peopleDataProvider(),
         restricted: await restrictedDataProvider()
     }
+
+    const proxy = new Proxy(computed, {
+        get: (target, prop) => {
+            if (prop === 'restricted') {
+                console.log('accessing restricted');
+            }
+
+            return target[prop];
+        }
+    })
+    
+    return proxy;
 }
 
 (global as any).dataProvider = dataProvider;
