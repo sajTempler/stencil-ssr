@@ -1,7 +1,13 @@
 import { createStore } from "@stencil/store";
 
-const { state, onChange } = createStore({
-  people: (window as any)?.appState?.people
+type StoreData = {
+  people: { name: string }[],
+  restricted: string[]
+}
+
+const { state, onChange } = createStore<StoreData>({
+  people: (window as any)?.appState?.people,
+  restricted: (window as any)?.appState?.restricted
 });
 
 onChange('people', value => {

@@ -3,8 +3,10 @@
   width: 100%;
   align-items: center;
   flex-direction: column;
+  position: relative;
 }
 
 p {
   font-size: x-large;
+  cursor: pointer;
 }

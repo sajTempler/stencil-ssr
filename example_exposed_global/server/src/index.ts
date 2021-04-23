@@ -6,22 +6,18 @@ import * as cheerio from 'cheerio'
 
 import { renderToString } from '../../client/hydrate';
 
-export enum DataProviderType {
-    PEOPLE = 'people'
-}
-
-interface IPeople {
+interface IPerson {
     name: string;
 }
 
-export type People = IPeople;
+export type People = IPerson[];
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 
-app.get('/', async (_req, res) => {
+app.get('/', async (_req: express.Request, res) => {
 
     const { html } = await renderToString("<my-component></my-component>", {
         prettyHtml: true
@@ -31,20 +27,11 @@ app.get('/', async (_req, res) => {
     const $ = cheerio.load(html);
 
     $('head').append(`<script type="module" src="http://${process.env.LOCAL_VM_IP?.trim() || 'localhost'}:9999/dist/client/client.esm.js"></script>`);
+
+    const data = JSON.stringify(await dataProvider());
+
     $('head').append(`<script type="application/javascript">
-        window.appState = {
-            people: [
-                {
-                    name: 'szymon'
-                },
-                {
-                    name: 'ali'
-                },
-                {
-                    name: 'wik'
-                }
-            ]
-        }
+        window.appState = ${data}
     </script>`);
 
     const finalHtml = $.html();
@@ -52,10 +39,9 @@ app.get('/', async (_req, res) => {
     res.send(finalHtml);
 })
 
-// todo: figure how to get rid of any
-function peopleDataProvider(): Promise<People[] | any> {
+function peopleDataProvider(): Promise<People> {
     return new Promise((resolve, _reject) => {
-        const data: People[] = [
+        const data: People = [
             {
                 name: 'szymon'
             },
@@ -71,12 +57,20 @@ function peopleDataProvider(): Promise<People[] | any> {
     });
 }
 
-async function dataProvider<T>(type: DataProviderType): Promise<T> {
-    switch (type) {
-        case DataProviderType.PEOPLE:
-            return peopleDataProvider();
-        default:
-            return peopleDataProvider();
+function restrictedDataProvider(): Promise<string[]> {
+    return new Promise((resolve, _reject) => {
+        const data = [
+            'secret1', 'secret2', 'secret3'
+        ];
+
+        return resolve(data);
+    });
+}
+
+async function dataProvider(): Promise<any> {
+    return {
+        people: await peopleDataProvider(),
+        restricted: await restrictedDataProvider()
     }
 }
 

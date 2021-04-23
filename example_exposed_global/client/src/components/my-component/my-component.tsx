@@ -1,4 +1,4 @@
-import { Component, h, Build, Element, Prop, Host } from '@stencil/core';
+import { Component, h, Build, Element, Prop, Host, State } from '@stencil/core';
 
 import state from '../../store/store';
 
@@ -12,37 +12,47 @@ export class MyComponent {
   @Element() el: HTMLElement;
 
   @Prop()
-  people: any[];
+  people: { name: string }[];
+
+  @State() logged: boolean = false;
 
   async componentWillLoad() {
     if (Build.isServer) {
       try {
         // @ts-ignore
-        state.people = await global.dataProvider<string[]>('people');
+        state.people = (await global.dataProvider())?.people;
+        // @ts-ignore
+        state.restricted = (await global.dataProvider())?.restricted;
       } catch (e) {
         console.error(e);
       }
     }
 
-    // this happens directly in store
-    // if (Build.isBrowser) {
-    //   this.people = state.people;
-    // }
+    // for client data is initialized directly in store
   }
 
-  handleClick(_e: Event, person: string) {
-    this.people = this.people.map(per => {
-      if (person === per) {
-        return { name: 'clicked' }
+  handleClick(_e: Event, person: { name: string }) {
+    state.people = state.people.map(({name}) => {
+      if (person.name === name) {
+        return { name: `${name} clicked!` }
       }
 
-      return { name: person };
+      return { name };
     })
+  }
+
+  parseCookie() {
+    const [cookieName, value] = document.cookie.split('=');
+    return { [cookieName]: value };
   }
 
   render() {
     return <Host>
+      <h1>People:</h1>
       {state.people?.map(person => <p onClick={e => this.handleClick(e, person)}>{person.name}</p>)}
+
+      <h2>Restricted access:</h2>
+      {state.restricted?.map(val => <p>{val}</p>)}
     </Host>;
   }
 }

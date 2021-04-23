@@ -4698,7 +4698,7 @@ var global$1 = (typeof global !== "undefined" ? global :
   typeof window !== "undefined" ? window : {});
 
 const NAMESPACE = 'client';
-const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: false, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
+const BUILD = /* client */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: false, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: false, propString: false, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: true, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: false, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
 
 function componentOnReady() {
  return getHostRef(this).$onReadyPromise$;
@@ -5572,46 +5572,54 @@ const createStore = (defaultState, shouldUpdate) => {
     return map;
 };
 
-var _a, _b;
+var _a, _b, _c, _d;
 const { state, onChange } = createStore({
-  people: (_b = (_a = window) === null || _a === void 0 ? void 0 : _a.appState) === null || _b === void 0 ? void 0 : _b.people
+  people: (_b = (_a = window) === null || _a === void 0 ? void 0 : _a.appState) === null || _b === void 0 ? void 0 : _b.people,
+  restricted: (_d = (_c = window) === null || _c === void 0 ? void 0 : _c.appState) === null || _d === void 0 ? void 0 : _d.restricted
 });
 onChange('people', value => {
   state.people = value;
 });
 
-const myComponentCss = "/*!@:host*/.sc-my-component-h{display:flex;width:100%;align-items:center;flex-direction:column}/*!@p*/p.sc-my-component{font-size:x-large}";
+const myComponentCss = "/*!@:host*/.sc-my-component-h{display:flex;width:100%;align-items:center;flex-direction:column;position:relative}/*!@p*/p.sc-my-component{font-size:x-large;cursor:pointer}";
 
 class MyComponent {
   constructor(hostRef) {
     registerInstance(this, hostRef);
+    this.logged = false;
   }
   async componentWillLoad() {
+    var _a, _b;
     {
       try {
         // @ts-ignore
-        state.people = await global.dataProvider('people');
+        state.people = (_a = (await global.dataProvider())) === null || _a === void 0 ? void 0 : _a.people;
+        // @ts-ignore
+        state.restricted = (_b = (await global.dataProvider())) === null || _b === void 0 ? void 0 : _b.restricted;
       }
       catch (e) {
         console.error(e);
       }
     }
-    // this happens directly in store
-    // if (Build.isBrowser) {
-    //   this.people = state.people;
-    // }
+    // for client data is initialized directly in store
   }
   handleClick(_e, person) {
-    this.people = this.people.map(per => {
-      if (person === per) {
-        return { name: 'clicked' };
+    state.people = state.people.map(({ name }) => {
+      if (person.name === name) {
+        return { name: `${name} clicked!` };
       }
-      return { name: person };
+      return { name };
     });
   }
+  parseCookie() {
+    const [cookieName, value] = document.cookie.split('=');
+    return { [cookieName]: value };
+  }
   render() {
-    var _a;
-    return hAsync(Host, null, (_a = state.people) === null || _a === void 0 ? void 0 : _a.map(person => hAsync("p", { onClick: e => this.handleClick(e, person) }, person.name)));
+    var _a, _b;
+    return hAsync(Host, null, hAsync("h1", null, "People:"), (_a = state.people) === null || _a === void 0 ? void 0 :
+      _a.map(person => hAsync("p", { onClick: e => this.handleClick(e, person) }, person.name)), hAsync("h2", null, "Restricted access:"), (_b = state.restricted) === null || _b === void 0 ? void 0 :
+      _b.map(val => hAsync("p", null, val)));
   }
   get el() { return getElement(this); }
   static get style() { return myComponentCss; }
@@ -5619,7 +5627,8 @@ class MyComponent {
     "$flags$": 9,
     "$tagName$": "my-component",
     "$members$": {
-      "people": [16]
+      "people": [16],
+      "logged": [32]
     },
     "$listeners$": undefined,
     "$lazyBundleId$": "-",
