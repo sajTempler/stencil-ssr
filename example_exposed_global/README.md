@@ -1,3 +1,27 @@
+## BUG EXAMPLE
+
+terminal #1
+```
+cd client
+npm run build
+```
+
+terminal #2
+serve static files
+```
+cd clinet/dist
+npx http-server -p 9999 --cors
+```
+
+terminal #3
+```
+cd server
+npm run serve
+```
+
+open browser on localhost:3000
+change network setting to slow 3g to observe the behaviour
+
 ## Usage
 
 `data_contract` imitates npm package that can be shared across teams

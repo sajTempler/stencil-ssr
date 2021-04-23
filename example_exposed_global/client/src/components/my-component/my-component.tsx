@@ -1,5 +1,6 @@
-import { Component, h, Prop, Build } from '@stencil/core';
-import { People, DataProviderType } from 'data_contract';
+import { Component, h, Build, Element, Prop, Host, State } from '@stencil/core';
+
+import state from '../../store/store';
 
 @Component({
   tag: 'my-component',
@@ -8,22 +9,50 @@ import { People, DataProviderType } from 'data_contract';
 })
 export class MyComponent {
 
+  @Element() el: HTMLElement;
+
   @Prop()
-  people: People[];
+  people: { name: string }[];
+
+  @State() logged: boolean = false;
 
   async componentWillLoad() {
-    try {
-      if (Build.isServer) {
-        const people = await global.dataProvider<People[]>(DataProviderType.PEOPLE);
-        this.people = people;
+    if (Build.isServer) {
+      try {
+        // @ts-ignore
+        state.people = (await global.dataProvider())?.people;
+        // @ts-ignore
+        state.restricted = (await global.dataProvider())?.restricted;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // for client data is initialized directly in store
+  }
+
+  handleClick(_e: Event, person: { name: string }) {
+    state.people = state.people.map(({name}) => {
+      if (person.name === name) {
+        return { name: `${name} clicked!` }
       }
 
-    } catch (e) {
-      console.error(e);
-    }
+      return { name };
+    })
+  }
+
+  parseCookie() {
+    const [cookieName, value] = document.cookie.split('=');
+    return { [cookieName]: value };
   }
 
   render() {
-    return <div>{this.people?.map(person => <p>{person.name}</p>)}</div>;
+    return <Host>
+      <h1>People:</h1>
+      {state.people?.map(person => <p onClick={e => this.handleClick(e, person)}>{person.name}</p>)}
+
+      <h2>Restricted access:</h2>
+      {state.restricted?.map(val => <p>{val}</p>)}
+    </Host>;
   }
 }
