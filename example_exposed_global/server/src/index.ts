@@ -86,6 +86,8 @@ function restrictedDataProvider(): Promise<string[]> {
 
 async function dataProvider(): Promise<any> {
 
+    // todo restrict for req id
+
     const computed = {
         people: await peopleDataProvider(),
         restricted: await restrictedDataProvider()
